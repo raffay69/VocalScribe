@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siri Animation</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        #head{
+            position: absolute;
+            margin-top: -650px;
+            font-size: 60px;
+        }
+        b{
+            color: wheat;
+        }
+
+        .siri-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            width: 150px;
+            height: 150px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .siri-ring {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 4px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: siri-animation 1s infinite ease-in-out;
+        }
+
+        .siri-ring:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .siri-ring:nth-child(2) {
+            animation-delay: 0.25s;
+        }
+
+        .siri-ring:nth-child(3) {
+            animation-delay: 0.5s;
+        }
+
+        .siri-ring:nth-child(4) {
+            animation-delay: 0.75s;
+        }
+
+        .active .siri-ring {
+            border-color: wheat;
+            /*animation: active-animation 0.5s ease-in-out forwards;*/
+            animation: siri-animation 1s infinite ease-in-out;
+        }
+        .active .siri-ring:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .active .siri-ring:nth-child(2) {
+            animation-delay: 0.25s;
+        }
+
+        .active .siri-ring:nth-child(3) {
+            animation-delay: 0.5s;
+        }
+
+        .active .siri-ring:nth-child(4) {
+            animation-delay: 0.75s;
+        }
+
+
+        @keyframes siri-animation {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes active-animation {
+            from {
+                transform: scale(1);
+            }
+            to {
+                transform: scale(1.2);
+            }
+        }
+
+        textarea[type="text"] {
+            width: 300px;
+            height: 100px;
+            text-align: left;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #message {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="head">Vocal<b>Scribe</b></h1>
+    <div class="siri-container">
+        <div class="siri-ring"></div>
+        <div class="siri-ring"></div>
+        <div class="siri-ring"></div>
+        <div class="siri-ring"></div>
+    </div>
+    <div id="message"></div>
+    <textarea type="text" id="output" readonly></textarea>
+
+    <script>
+        document.querySelector('.siri-container').addEventListener('click', function() {
+            const container = this;
+            const message = document.getElementById('message');
+            message.innerText = 'Get ready to speak...';
+            container.classList.add('active');
+
+            setTimeout(() => {
+                message.innerText = 'Speak now...';
+            }, 2000);
+
+            fetch('/run-python', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.text) {
+                    document.getElementById('output').value = 'You said: ' + data.text;
+                } else if (data.error) {
+                    document.getElementById('output').value = 'Error: ' + data.error;
+                }
+                container.classList.remove('active');
+                message.innerText = '';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                container.classList.remove('active');
+                message.innerText = '';
+            });
+        });
+    </script>
+</body>
+</html>
