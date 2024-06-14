@@ -16,6 +16,9 @@
             color: #fff;
             font-family: Arial, sans-serif;
         }
+        ::placeholder{
+            color: wheat;
+        }
         #head{
             position: absolute;
             margin-top: -650px;
@@ -132,7 +135,7 @@
         <div class="siri-ring"></div>
     </div>
     <div id="message"></div>
-    <textarea type="text" id="output" readonly></textarea>
+    <textarea placeholder="Speech to Text converter" type="text" id="output" readonly></textarea>
 
     <script>
         document.querySelector('.siri-container').addEventListener('click', function() {
