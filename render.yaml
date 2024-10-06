@@ -1,7 +1,0 @@
-services:
-  - name: web
-    env: python
-    startCommand: |
-      gunicorn -w 4 -b 0.0.0.0:$PORT app:app
-    envVars:
-      PYTHONUNBUFFERED: "true"
